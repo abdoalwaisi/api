@@ -1,45 +1,59 @@
-const users = [
-  { name: "abd", username: "abdabd2003", id: "1", password: "12" },
-  { name: "jon", username: "jon123", id: "2", password: "12" },
-  { name: "ahamd", username: "heheniggaboy", id: "3", password: "12" },
-  { name: "nigga", username: "sometxt", id: "4", password: "12" },
-];
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database("./bobje.db");
 
-function getUserinfo(id) {
-  return users.find((user) => user.id === id); // Find user by ID
+// GET params id
+function getUserinfo(req, res) {
+  const id = req.params.id;
+  db.get(`SELECT * FROM users WHERE id = $id`, { $id: id }, (err, user) => {
+    if (err) {
+      return res.status(404).json({ msg: "err" });
+    }
+    res.status(200).json(user);
+  });
 }
 
-function newUser(name, username, password) {
-  const user = users.find((user) => user.username === username);
-
-  if (user) {
-    return undefined; // Username is not available
+function newUser(req, res) {
+  const {name, username, password } = req.body;
+  if (!name || !username || !password) {
+    return res
+      .status(400)
+      .json({ mess: "Name, username, and password are required" });
   }
-
-  let newUserinfo = {
-    name: name,
-    username: username,
-    id: (users.length + 1).toString(),
-    password: password,
-  };
-  console.log(users);
-  users.push(newUserinfo);
-  return newUserinfo;
+  db.run(
+    `INSERT INTO users (name, username, password) VALUES ($name , $username , $password)`,
+    {
+      $name: name,
+      $username: username,
+      $password: password,
+    },
+    (err) => {
+      if (err) res.status(400).json({});
+    }
+  );
+  res.status(200).json({});
 }
 
-function updateUserinfo(name, username, password) {
-  const user = users.find((user) => user.username === username);
-  if (!user) {
-    return undefined;
+function updateUserinfo(req, res) {
+  const { name, username, password } = req.body;
+  if (!name || !username || !password) {
+    return res.status(400).json({ mss: "missing info" });
   }
-  if (name === user.name && password === user.password) {
-    return undefined;
-  }
-  user.name = name;
-  user.password = password;
-  console.log(user);
-  console.log(users);
-  return 1;
+  db.run(
+    `UPDATE users SET name = $name , password = $password WHERE username = $username`,
+    {
+      $name: name,
+      $username: username,
+      $password: password,
+    },
+    (err) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ error: "Database error", details: err.message });
+      }
+    }
+  );
+  res.status(200).json({});
 }
 
 module.exports = { getUserinfo, newUser, updateUserinfo };
