@@ -1,12 +1,12 @@
 const express = require('express')
+
 const {
+  deleteProduct,
+  updateProduct,
+  newProduct,
   getProduct,
   getProducts,
-  newProduct,
-  updateProduct,
-  deleteProduct,
 } = require("../models/products");
-
 const router = express.Router()
 
 
