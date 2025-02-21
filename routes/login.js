@@ -1,10 +1,11 @@
 const experss = require("express")
+const {login} = require("../models/login") 
 
 
 const router = experss.Router()
 
-router.post("/", () => {
-  console.log("nigga");
+router.post("/", (req , res) => {
+  login(req , res)
 });
 
 router.delete("/", () => {

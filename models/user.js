@@ -1,5 +1,10 @@
 const sqlite3 = require("sqlite3").verbose();
+const bcrypt = require("bcryptjs");
 const db = new sqlite3.Database("./bobje.db");
+
+const hashPassword = async (password) => {
+  return await bcrypt.hash(password, 10); 
+};
 
 // GET params id
 function getUserinfo(req, res) {
@@ -12,19 +17,20 @@ function getUserinfo(req, res) {
   });
 }
 
-function newUser(req, res) {
-  const {name, username, password } = req.body;
+async function newUser(req, res) {
+  const { name, username, password } = req.body;
   if (!name || !username || !password) {
     return res
       .status(400)
       .json({ mess: "Name, username, and password are required" });
   }
+   const hashedPassword = await hashPassword(password);
   db.run(
     `INSERT INTO users (name, username, password) VALUES ($name , $username , $password)`,
     {
       $name: name,
       $username: username,
-      $password: password,
+      $password: hashedPassword,
     },
     (err) => {
       if (err) res.status(400).json({});
