@@ -4,12 +4,9 @@ const {login} = require("../models/login")
 
 const router = experss.Router()
 
-router.post("/", (req , res) => {
+router.post("/", (req , res , next) => {
   login(req , res)
 });
 
-router.delete("/", () => {
-  console.log("nigga2");
-});
 
 module.exports = router

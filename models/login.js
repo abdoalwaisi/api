@@ -36,12 +36,8 @@ async function login(req, res) {
       if (!isMatch) {
         return res.status(401).json({ error: "Invalid username or password" });
       }
-
-      res.status(200).json({
-        success: true,
-        message: "Login successful",
-        user: { id: user.id, username: user.username },
-      });
+      const accessToken = jwt.sign({username : user.username , id : user.id}, SECRET_KEY, { expiresIn: "7d" });
+      res.status(200).json({ accessToken: accessToken });
     }
   );
 }
