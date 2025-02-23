@@ -9,8 +9,16 @@ const {
 } = require("../models/products");
 const router = express.Router();
 
-router.get("/", (req, res, next) => {
-  getProducts(req, res);
+router.get("/", async (req, res, next) => {
+  try {
+    const products = await getProducts();
+    if (products.length === 0) {
+      res.status(404).json({ msg: "not found" });
+    }
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 router.get("/:id", (req, res, next) => {

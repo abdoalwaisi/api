@@ -60,18 +60,20 @@ function getProduct(req, res) {
     res.status(200).json(product);
   });
 }
+// GET
 
-function getProducts(req, res) {
-  db.all(`SELECT * FROM products`, [], (err, products) => {
-    if (err) {
-      return res
-        .status(500)
-        .json({ error: "Database error", details: err.message });
-    }
-    if (!products) {
-      return res.status(404).json({ msg: "not found" });
-    }
-    res.status(200).json(products);
+function getProducts() {
+  return new Promise((resolve, reject) => {
+    db.all(`SELECT * FROM products`, [], (err, products) => {
+      if (err) {
+        reject({ msg: "database err" });
+      } else if (!products || products.length === 0) {
+        reject([]);
+      }
+      if (products) {
+        resolve(products);
+      }
+    });
   });
 }
 
@@ -96,9 +98,7 @@ function updateProduct(req, res) {
   res.status(200).json({ meg: "updated" });
 }
 
-function deleteProduct(req, res) {
-
-}
+function deleteProduct(req, res) {}
 
 module.exports = {
   newProduct,
