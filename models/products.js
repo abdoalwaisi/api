@@ -57,7 +57,7 @@ function updateProduct(id, name, price, description) {
     db.run(
       `UPDATE products SET name = ? , price = ? , description = ? WHERE id = ? `,
       [name, price, description, id],
-      (err) => {
+      function (err) {
         if (err) {
           reject({ error: "Database error", details: err.message });
         } else if (this.changes === 0) {

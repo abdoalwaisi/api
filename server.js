@@ -4,6 +4,7 @@ const user = require("./routes/user");
 const products = require("./routes/products");
 const login = require("./routes/login");
 const category = require(`./routes/category`)
+const notFoundMiddleware = require(`./middleware/notfound`);
 
 const app = express();
 
@@ -14,6 +15,8 @@ app.use("/api/user", user);
 app.use("/api/products", products);
 app.use("/api/login", login);
 app.use(`/api/category`, category);
+
+app.use(notFoundMiddleware);
 
 app.listen(8080, () => {
   console.log("server is runing");
