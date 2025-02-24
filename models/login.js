@@ -14,7 +14,7 @@ const comparePassword = async (password, hash) => {
   return await bcrypt.compare(password, hash);
 };
 
-async function login(req, res) {
+async function login(req , res) {
   const { username, password } = req.body;
   if (!username || !password) {
     return res
@@ -36,7 +36,11 @@ async function login(req, res) {
       if (!isMatch) {
         return res.status(401).json({ error: "Invalid username or password" });
       }
-      const accessToken = jwt.sign({username : user.username , id : user.id}, SECRET_KEY, { expiresIn: "7d" });
+      const accessToken = jwt.sign(
+        { username: user.username, id: user.id },
+        SECRET_KEY,
+        { expiresIn: "7d" }
+      );
       res.status(200).json({ accessToken: accessToken });
     }
   );
